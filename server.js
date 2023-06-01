@@ -3,12 +3,30 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
-
+const helmet = require('helmet');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
 
 const app = express();
+
+
+
+
+
+
+//setting Content-Security-Policy: that restricts the loading of resources and scripts to only those explicitly allowed from your website and the specified trusted CDN domain.
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      //only resources from the same origin (your website) are allowed to be loaded by default. The 'self' value represents the current origin.
+      defaultSrc: ["'self'"],
+      // allowing scripts to be downloaded from the same origin ('self') as well as from the domain 'trusted-cdn.com'.
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'"]
+    }
+  })
+);
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
